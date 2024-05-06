@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: __APP-NAME__
+  labels:
+    app: __APP-NAME__
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: __APP-NAME__
+  template:
+    metadata:
+      labels:
+        app: __APP-NAME__
+    spec:
+      containers:
+      - name: app
+        image: __IMAGE__
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: /data
+          name: test-volume
+      volumes:
+        - name: test-volume
+          hostPath:
+            # directory location on host
+            path: /data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: __APP-NAME__-svc
+spec:
+  type: NodePort
+  selector:
+    app: __APP-NAME__
+  ports:
+  - name: __APP-NAME__-port
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
